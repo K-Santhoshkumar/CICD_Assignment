@@ -1,0 +1,16 @@
+# Docker Compose file used to DEPLOY the application on a server.
+# Jenkins runs `docker compose up -d` on the deploy target.
+services:
+  app:
+    # IMAGE is replaced by Jenkins with the freshly built tag,
+    # e.g. yourdockerhubuser/java-cicd-demo:42
+    image: ${IMAGE:-java-cicd-demo:local}
+    container_name: java-cicd-demo
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
